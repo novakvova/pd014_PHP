@@ -6,29 +6,33 @@ if($_SERVER['REQUEST_METHOD']=='POST')
     $price = $_POST['price'];
     $description = $_POST['description'];
     //print_r([$name, $price, $description]);
-    $dir_save = 'images/';
-    $image_name=guidv4().'.jpeg';
-    $uploadfile = $dir_save. $image_name;
-    if(move_uploaded_file($_FILES['image']['tmp_name'], $uploadfile))
-    {
+//    $dir_save = 'images/';
+//    $image_name=guidv4().'.jpeg';
+//    $uploadfile = $dir_save. $image_name;
+    //if(move_uploaded_file($_FILES['image']['tmp_name'], $uploadfile))
+    //{
         include_once($_SERVER['DOCUMENT_ROOT'].'/options/connection_database.php');
-        $sql = 'INSERT INTO tbl_products (name, image, price, datecrate, description) VALUES(:name, :image, :price, NOW(), :description);';
+        $sql = 'INSERT INTO tbl_products (name, price, datecrate, description) VALUES(:name, :price, NOW(), :description);';
         //echo $sql;
         //exit;
         $stmt = $dbh->prepare($sql);
         $stmt->bindParam(':name',$name);
-        $stmt->bindParam(':image',$image_name);
         $stmt->bindParam(':price',$price);
         $stmt->bindParam(':description',$description);
         $stmt->execute();
+
+        $sql="SELECT LAST_INSERT_ID() as id;";
+        $item = $dbh->query($sql)->fetch();
+        $insert_id=$item['id'];
+
         header("Location: /");
         exit;
-    }
-    else
-    {
-        echo "Problem save image";
-        exit;
-    }
+    //}
+//    else
+//    {
+//        echo "Problem save image";
+//        exit;
+//    }
 
 }
 ?>
